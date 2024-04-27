@@ -19,7 +19,7 @@ var router = express.Router();
 var SECRET_KEY = process.env.SECRET_KEY;
 
 //web api endpoint
-app.get('/api/weather', async (req, res) => {
+router.get('/api/weather', async (req, res) => {
   try {
     const response = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
     if (!response.ok) {
