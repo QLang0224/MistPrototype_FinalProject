@@ -18,6 +18,22 @@ var router = express.Router();
 
 var SECRET_KEY = process.env.SECRET_KEY;
 
+//web api endpoint
+app.get('/api/weather', async (req, res) => {
+  try {
+    const response = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
+    if (!response.ok) {
+      throw new Error('Network response not ok');
+    }
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    res.status(500).json({ error: 'Failed to fetch weather data' });
+  }
+});
+
+//signup endpoint
 router.post('/signup', function(req, res) {
     if (!req.body.username || !req.body.password) {
         res.json({success: false, msg: 'Please include both username and password to signup.'})
@@ -40,6 +56,7 @@ router.post('/signup', function(req, res) {
     }
 });
 
+//signin endpoint
 router.post('/signin', function (req, res) {
     var userNew = new User();
     userNew.username = req.body.username;
@@ -63,6 +80,7 @@ router.post('/signin', function (req, res) {
     })
 });
 
+//auth-verification endpoint
 function verifyToken(req, res, next) {
     var token = req.headers.authorization;
     if (!token) {
