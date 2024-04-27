@@ -10,3 +10,5 @@ module.exports = function () {
             this.userList.push(user);
             return 1;
         }
+    }
+}
