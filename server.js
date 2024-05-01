@@ -19,6 +19,7 @@ var router = express.Router();
 var SECRET_KEY = process.env.SECRET_KEY;
 
 // Define the directory where your images are stored
+const path = require('path');
 const imagesDirectory = path.join(__dirname, 'weatherimages');
 
 // Web API Endpoint
