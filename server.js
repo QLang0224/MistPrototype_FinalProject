@@ -8,6 +8,29 @@ var cors = require('cors');
 var User = require('./Users');
 const mongoose = require('mongoose');
 
+const uri = "mongodb+srv://weatherwebapiproject:Weather2024@weather.ank6g9x.mongodb.net/";
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MistDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
+
 var app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -18,7 +41,10 @@ var router = express.Router();
 
 var SECRET_KEY = process.env.SECRET_KEY;
 
-//web api endpoint
+// Define the directory where your images are stored
+const imagesDirectory = path.join(__dirname, 'weatherimages');
+
+// Web API Endpoint
 router.get('/api/weather', async (req, res) => {
   try {
     const response = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
@@ -33,7 +59,7 @@ router.get('/api/weather', async (req, res) => {
   }
 });
 
-//signup endpoint
+// Signup endpoint
 router.post('/signup', function(req, res) {
     if (!req.body.username || !req.body.password) {
         res.json({success: false, msg: 'Please include both username and password to signup.'})
@@ -94,6 +120,52 @@ function verifyToken(req, res, next) {
         next();
     });
 }
+
+router.route('/forecast')
+.get(authJwtController.isAuthenticated, async function (req, res) {
+    try {
+        // Fetch current weather data
+        const weatherResponse = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
+        if (!weatherResponse.ok) {
+            throw new Error('Network response not ok');
+        }
+        const weatherData = await weatherResponse.json();
+
+        // Extract current temperature in Fahrenheit and weather conditions
+        const currentWeather = {
+            temperatureFahrenheit: weatherData.properties.periods[0].temperature,
+            conditions: weatherData.properties.periods[0].shortForecast
+        };
+
+        // Mapping weather conditions to images
+        let weatherImage;
+        switch (currentWeather.conditions.toLowerCase()) {
+            case 'cloudy':
+                weatherImage = 'cloudy.png';
+                break;
+            case 'rainy':
+                weatherImage = 'rainy.png';
+                break;
+            case 'snowy':
+                weatherImage = 'snowy.png';
+                break;
+            case 'sunny':
+                weatherImage = 'sunny.png';
+                break;
+            default:
+                weatherImage = 'default.png';
+            }
+
+            res.json({
+                currentWeather,
+                weatherImage
+            });
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+            res.status(500).json({ error: 'Failed to fetch weather data' });
+        }
+    });
+    
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
