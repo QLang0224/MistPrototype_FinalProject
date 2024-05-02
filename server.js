@@ -119,15 +119,22 @@ router.route('/forecast')
         let weatherImage;
         switch (currentWeather.conditions.toLowerCase()) {
             case 'cloudy':
+            case 'partly cloudy then slight chance showers and thunderstorms':
+            case 'chance showers and thunderstorms then sunny':
                 weatherImage = 'cloudy.png';
                 break;
             case 'rainy':
+            case 'showers and thunderstorms':
+            case 'showers and thunderstorms likely':
+            case 'chance showers and thunderstorms':
+            case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
                 weatherImage = 'rainy.png';
                 break;
             case 'snowy':
                 weatherImage = 'snowy.png';
                 break;
             case 'sunny':
+            case 'mostly clear':
                 weatherImage = 'sunny.png';
                 break;
             default:
