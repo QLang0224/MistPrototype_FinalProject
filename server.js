@@ -162,7 +162,7 @@ router.get('/forecastlist', async (req, res) => {
       }
       const data = await response.json();
   
-      const sevenDayForecast = data.properties.periods.slice(0, 14);
+      const sevenDayForecast = data.properties.periods.slice(0, 13);
   
       res.json(sevenDayForecast);
     } catch (error) {
