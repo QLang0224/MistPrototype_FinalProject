@@ -151,8 +151,8 @@ router.route('/forecast')
         }
     });
 
-// Modify your backend route to fetch the forecast for the next 7 days
-router.get('/forecastlist', async (req, res) => {
+// Fetch the forecast for the next 7 days
+router.route('/forecastlist', async (req, res) => {
     try {
       // Fetch forecast data for the next 7 days from weather API
       // Adjust the API endpoint and parameters according to the weather service
