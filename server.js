@@ -140,39 +140,43 @@ router.route('/forecast')
             forecastId: forecastId,
             temperatureFahrenheit: weatherData.properties.periods[0].temperature,
             conditions: weatherData.properties.periods[0].shortForecast,
-            imageUrl: weatherData.properties.periods[0].icon
-        };
-
-        // Mapping weather conditions to images
-        let imageUrl;
-        switch (forecast.conditions.toLowerCase()) {
-            case 'cloudy':
-            case 'partly cloudy then slight chance showers and thunderstorms':
-            case 'chance showers and thunderstorms then sunny':
-                imageUrl = 'https://i.imgur.com/tTqV2XF.png';
-                break;
-            case 'rainy':
-            case 'showers and thunderstorms':
-            case 'showers and thunderstorms likely':
-            case 'chance showers and thunderstorms':
-            case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
-                imageUrl = 'https://i.imgur.com/YDNCivR.png';
-                break;
-            case 'snowy':
-                imageUrl = 'https://i.imgur.com/dXGTfkB.png';
-                break;
-            case 'sunny':
-            case 'mostly clear':
-                imageUrl = 'https://i.imgur.com/yJulfKw.png';
-                break;
-            default:
-                imageUrl = 'https://i.imgur.com/j6oE6lq.png';
+            imageUrl: '', // Initialize imageUrl
+        
+            // Mapping weather conditions to images
+            setWeatherImage: function() {
+                switch (this.conditions.toLowerCase()) {
+                    case 'cloudy':
+                    case 'partly cloudy then slight chance showers and thunderstorms':
+                    case 'chance showers and thunderstorms then sunny':
+                        this.imageUrl = 'https://i.imgur.com/tTqV2XF.png';
+                        break;
+                    case 'rainy':
+                    case 'showers and thunderstorms':
+                    case 'showers and thunderstorms likely':
+                    case 'chance showers and thunderstorms':
+                    case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
+                        this.imageUrl = 'https://i.imgur.com/YDNCivR.png';
+                        break;
+                    case 'snowy':
+                        this.imageUrl = 'https://i.imgur.com/dXGTfkB.png';
+                        break;
+                    case 'sunny':
+                    case 'mostly clear':
+                        this.imageUrl = 'https://i.imgur.com/yJulfKw.png';
+                        break;
+                    default:
+                        this.imageUrl = 'https://i.imgur.com/j6oE6lq.png';
+                }
             }
+        };
+        
+        // Call the function to set the imageUrl
+        forecast.setWeatherImage();
 
             res.json({
-                forecast,
-                imageUrl
+                forecast
             });
+
         } catch (error) {
             console.error('Error fetching weather data:', error);
             res.status(500).json({ error: 'Failed to fetch weather data' });
