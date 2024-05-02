@@ -15,10 +15,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));  
 app.use(passport.initialize());
 
-app.use(cors({
-    origin: 'https://mist-710j.onrender.com'
-}));
-
 var router = express.Router();
 
 var SECRET_KEY = process.env.SECRET_KEY;
