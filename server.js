@@ -21,7 +21,6 @@ var SECRET_KEY = process.env.SECRET_KEY;
 
 // Define the directory where your images are stored
 const path = require('path');
-const imagesDirectory = path.join(__dirname, 'weatherimages');
 
 // Web API Endpoint
 router.get('/api/weather', async (req, res) => {
@@ -125,24 +124,24 @@ router.route('/forecast')
             case 'cloudy':
             case 'partly cloudy then slight chance showers and thunderstorms':
             case 'chance showers and thunderstorms then sunny':
-                imageUrl = 'cloudy.png';
+                imageUrl = 'https://i.imgur.com/tTqV2XF.png';
                 break;
             case 'rainy':
             case 'showers and thunderstorms':
             case 'showers and thunderstorms likely':
             case 'chance showers and thunderstorms':
             case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
-                imageUrl = 'rainy.png';
+                imageUrl = 'https://i.imgur.com/YDNCivR.png';
                 break;
             case 'snowy':
-                imageUrl = 'snowy.png';
+                imageUrl = 'https://i.imgur.com/dXGTfkB.png';
                 break;
             case 'sunny':
             case 'mostly clear':
-                imageUrl = 'sunny.png';
+                imageUrl = 'https://i.imgur.com/yJulfKw.png';
                 break;
             default:
-                imageUrl = 'default.png';
+                imageUrl = 'https://i.imgur.com/j6oE6lq.png';
             }
 
             res.json({
