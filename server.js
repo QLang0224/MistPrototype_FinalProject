@@ -111,6 +111,7 @@ router.route('/forecast')
 
         // Extract current temperature in Fahrenheit and weather conditions
         const currentWeather = {
+            forecastId: weatherData.properties.periods[0].number,
             temperatureFahrenheit: weatherData.properties.periods[0].temperature,
             conditions: weatherData.properties.periods[0].shortForecast
         };
@@ -172,7 +173,6 @@ router.route('/forecastlist', async (req, res) => {
   });
   
     
-
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app;
