@@ -112,7 +112,7 @@ router.route('/forecast')
         // Extract current temperature in Fahrenheit and weather conditions
         const forecastId = weatherData.properties.periods.number;
 
-        const currentWeather = {
+        const forecast = {
             forecastId: forecastId,
             temperatureFahrenheit: weatherData.properties.periods[forecastId].temperature,
             conditions: weatherData.properties.periods[forecastId].shortForecast
@@ -120,7 +120,7 @@ router.route('/forecast')
 
         // Mapping weather conditions to images
         let imageUrl;
-        switch (currentWeather.conditions.toLowerCase()) {
+        switch (forecast.conditions.toLowerCase()) {
             case 'cloudy':
             case 'partly cloudy then slight chance showers and thunderstorms':
             case 'chance showers and thunderstorms then sunny':
@@ -145,7 +145,7 @@ router.route('/forecast')
             }
 
             res.json({
-                currentWeather,
+                forecast,
                 imageUrl
             });
         } catch (error) {
