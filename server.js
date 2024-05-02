@@ -7,7 +7,7 @@ var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
 const mongoose = require('mongoose');
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 
 var app = express();
 app.use(cors());
