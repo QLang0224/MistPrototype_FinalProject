@@ -156,7 +156,8 @@ router.route('/forecast')
     });
 
 // Fetch the forecast for the next 7 days
-router.route('/forecastlist', async (req, res) => {
+router.route('/forecastlist')
+    .get(authJwtController.isAuthenticated, async function (req, res) {
     try {
       // Fetch forecast data for the next 7 days from weather API
       // Adjust the API endpoint and parameters according to the weather service
@@ -173,7 +174,7 @@ router.route('/forecastlist', async (req, res) => {
       console.error('Error fetching weather data:', error);
       res.status(500).json({ error: 'Failed to fetch weather data' });
     }
-  });
+});
   
     
 app.use('/', router);
