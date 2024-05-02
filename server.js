@@ -138,8 +138,9 @@ router.route('/forecast')
 
         const forecast = {
             forecastId: forecastId,
-            temperatureFahrenheit: weatherData.properties.periods[forecastId].temperature,
-            conditions: weatherData.properties.periods[forecastId].shortForecast
+            temperatureFahrenheit: weatherData.properties.periods[0].temperature,
+            conditions: weatherData.properties.periods[0].shortForecast,
+            imageUrl: weatherData.properties.periods[0].icon
         };
 
         // Mapping weather conditions to images
