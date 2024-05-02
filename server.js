@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
 const mongoose = require('mongoose');
+const fetch = require('node-fetch');
 
 var app = express();
 app.use(cors());
@@ -110,10 +111,12 @@ router.route('/forecast')
         const weatherData = await weatherResponse.json();
 
         // Extract current temperature in Fahrenheit and weather conditions
+        const forecastId = weatherData.properties.periods.number;
+
         const currentWeather = {
-            forecastId: weatherData.properties.periods[0].number,
-            temperatureFahrenheit: weatherData.properties.periods[0].temperature,
-            conditions: weatherData.properties.periods[0].shortForecast
+            forecastId: forecastId,
+            temperatureFahrenheit: weatherData.properties.periods[forecastId].temperature,
+            conditions: weatherData.properties.periods[forecastId].shortForecast
         };
 
         // Mapping weather conditions to images
