@@ -125,64 +125,22 @@ function verifyToken(req, res, next) {
     });
 }
 
-router.route('/forecast')
-    .get(authJwtController.isAuthenticated, async function (req, res) {
-    try {
-        // Fetch current weather data
-        const weatherResponse = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
-        if (!weatherResponse.ok) {
-            throw new Error('Network response not ok');
-        }
-        const weatherData = await weatherResponse.json();
-
-        // Extract current temperature in Fahrenheit and weather conditions
-        const forecastId = weatherData.properties.periods.number;
-
-        const forecast = {
-            forecastId: forecastId,
-            temperatureFahrenheit: weatherData.properties.periods[0].temperature,
-            conditions: weatherData.properties.periods[0].shortForecast,
-            imageUrl: '', // Initialize imageUrl
-        
-            // Mapping weather conditions to images
-            setWeatherImage: function() {
-                switch (this.conditions.toLowerCase()) {
-                    case 'cloudy':
-                    case 'partly cloudy then slight chance showers and thunderstorms':
-                    case 'chance showers and thunderstorms then sunny':
-                        this.imageUrl = 'https://i.imgur.com/tTqV2XF.png';
-                        break;
-                    case 'rainy':
-                    case 'showers and thunderstorms':
-                    case 'showers and thunderstorms likely':
-                    case 'chance showers and thunderstorms':
-                    case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
-                        this.imageUrl = 'https://i.imgur.com/YDNCivR.png';
-                        break;
-                    case 'snowy':
-                        this.imageUrl = 'https://i.imgur.com/dXGTfkB.png';
-                        break;
-                    case 'sunny':
-                    case 'mostly clear':
-                        this.imageUrl = 'https://i.imgur.com/yJulfKw.png';
-                        break;
-                    default:
-                        this.imageUrl = 'https://i.imgur.com/j6oE6lq.png';
+router.route('/forecast/idofforecast')
+    .get(authJwtController.isAuthenticated, function (req, res) {
+        Forecast.findOne({_id: req.params.idofforecast}, function(err, data) {
+            if (err || !data) {
+                res.json({status: 400, message: "Forecast couldn't be found."});
+            }
+            else {
+                if(err){
+                    console.log("Error encountered.");
+                    res.send(err);
+                }
+                else {
+                    res.json({status: 200, message: "Forecast found!", Forecast: data});
                 }
             }
-        };
-        
-        // Call the function to set the imageUrl
-        forecast.setWeatherImage();
-
-            res.json({
-                forecast
-            });
-
-        } catch (error) {
-            console.error('Error fetching weather data:', error);
-            res.status(500).json({ error: 'Failed to fetch weather data' });
-        }
+        });
     })
 
     .put(authJwtController.isAuthenticated, async function(req, res) {
@@ -201,7 +159,7 @@ router.route('/forecast')
             forecasts.forEach(async function(forecast) {
                 var currentNumber = 0;
                 // Update each forecast document with new weather data
-                await Forecast.findOneAndUpdate({ _id: forecast._id }, { 
+                await Forecast.findOneAndUpdate({ _id: weather._id }, { 
                     timeOfDay: weatherData.properties.periods[currentNumber].name,
                     temperatureFarenheit: weatherData.properties.periods[currentNumber].temperature,
                     conditions: weatherData.properties.periods[currentNumber].shortForecast,
