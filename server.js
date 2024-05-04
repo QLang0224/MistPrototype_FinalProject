@@ -6,6 +6,7 @@ var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
+var Forecast = require('./Forecast');
 const mongoose = require('mongoose');
 // const fetch = require('node-fetch');
 
@@ -55,7 +56,8 @@ router.get('/api/weather', async (req, res) => {
     }
     const data = await response.json();
     res.json(data);
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error fetching weather data:', error);
     res.status(500).json({ error: 'Failed to fetch weather data' });
   }
@@ -84,7 +86,7 @@ router.post('/signup', function(req, res) {
     }
 });
 
-//signin endpoint
+// Signin endpoint
 router.post('/signin', function (req, res) {
     var userNew = new User();
     userNew.username = req.body.username;
@@ -180,6 +182,69 @@ router.route('/forecast')
         } catch (error) {
             console.error('Error fetching weather data:', error);
             res.status(500).json({ error: 'Failed to fetch weather data' });
+        }
+    })
+
+    .put(authJwtController.isAuthenticated, async function(req, res) {
+        try {
+            // Fetch current weather data
+            const weatherResponse = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
+            if (!weatherResponse.ok) {
+                throw new Error('Network response not ok');
+            }
+            const weatherData = await weatherResponse.json();
+    
+            // Find all documents in the Forecast collection
+            const forecasts = await Forecast.find();
+    
+            // Loop through each forecast document
+            forecasts.forEach(async function(forecast) {
+                var currentNumber = 0;
+                // Update each forecast document with new weather data
+                await Forecast.findOneAndUpdate({ _id: forecast._id }, { 
+                    timeOfDay: weatherData.properties.periods[currentNumber].name,
+                    temperatureFarenheit: weatherData.properties.periods[currentNumber].temperature,
+                    conditions: weatherData.properties.periods[currentNumber].shortForecast,
+                    windSpeed: weatherData.properties.periods[currentNumber].windSpeed,
+                    precipitationChance: weatherData.properties.periods[currentNumber].probabilityOfPrecipitation.value,
+                    imageUrl: '', // Initialize imageUrl
+        
+                    // Mapping weather conditions to images
+                    setWeatherImage: function() {
+                        switch (this.conditions.toLowerCase()) {
+                            case 'cloudy':
+                            case 'partly cloudy then slight chance showers and thunderstorms':
+                            case 'chance showers and thunderstorms then sunny':
+                                this.imageUrl = 'https://i.imgur.com/tTqV2XF.png';
+                                break;
+                            case 'rainy':
+                            case 'showers and thunderstorms':
+                            case 'showers and thunderstorms likely':
+                            case 'chance showers and thunderstorms':
+                            case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
+                                this.imageUrl = 'https://i.imgur.com/YDNCivR.png';
+                                break;
+                            case 'snowy':
+                                this.imageUrl = 'https://i.imgur.com/dXGTfkB.png';
+                                break;
+                            case 'sunny':
+                            case 'mostly clear':
+                                this.imageUrl = 'https://i.imgur.com/yJulfKw.png';
+                                break;
+                            default:
+                                this.imageUrl = 'https://i.imgur.com/j6oE6lq.png';
+                        };
+                    }
+            })
+            currentNumber = currentNumber + 1;
+        });
+
+        forecast.setWeatherImage();
+        res.json({ status: 200, message: "Forecasts updated" });
+        }
+        catch (error) {
+            console.error('Error updating forecasts:', error);
+            res.status(500).json({ error: 'Failed to update forecasts' });
         }
     });
 
