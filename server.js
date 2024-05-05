@@ -228,23 +228,23 @@ router.route('/forecast/idofforecast')
 // Fetch the forecast for the next 7 days
 router.route('/forecastlist')
     .get(authJwtController.isAuthenticated, async function (req, res) {
-    try {
-      // Fetch forecast data for the next 7 days from weather API
-      // Adjust the API endpoint and parameters according to the weather service
-      const response = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
-      if (!response.ok) {
-        throw new Error('Network response not ok');
-      }
-      const data = await response.json();
-  
-      const sevenDayForecast = data.properties.periods.slice(0, 13);
-  
-      res.json(sevenDayForecast);
-    } catch (error) {
-      console.error('Error fetching weather data:', error);
-      res.status(500).json({ error: 'Failed to fetch weather data' });
-    }
-});
+        try {
+            // Fetch forecast data for the next 7 days from weather API
+            const response = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
+            if (!response.ok) {
+                throw new Error('Network response not ok');
+            }
+            const data = await response.json();
+
+            // Assuming you have a Forecast model/schema
+            const forecastData = data.properties.periods.slice(0, 14);
+            res.json(forecastData);
+        }
+        catch (error) {
+            console.error('Error fetching weather data:', error);
+            res.status(500).json({ error: 'Failed to fetch weather data' });
+        }
+    });
   
     
 app.use('/', router);
