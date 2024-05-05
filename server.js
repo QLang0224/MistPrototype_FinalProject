@@ -165,7 +165,7 @@ router.route('/forecast/idofforecast')
                 console.error("Error fetching forecast:", error);
                 res.status(500).json({ error: "Failed to fetch forecast" });
             }
-        });
+        })
     
     .put(authJwtController.isAuthenticated, async function(req, res) {
         try {
