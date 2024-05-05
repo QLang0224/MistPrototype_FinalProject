@@ -189,7 +189,7 @@ router.route('/forecast/idofforecast')
                     temperatureFarenheit: weatherData.properties.periods[i].temperature,
                     conditions: weatherData.properties.periods[i].shortForecast,
                     windSpeed: weatherData.properties.periods[i].windSpeed,
-                    precipitationChance: weatherData.properties.periods[i].probabilityOfPrecipitation.value || 0,
+                    precipitationChance: weatherData.properties.periods[i].probabilityOfPrecipitation?.value || 0,
                     imageUrl: getWeatherImageUrl(weatherData.properties.periods[i].shortForecast)
                 });
             }
