@@ -55,7 +55,7 @@ router.get('/api/weather', async (req, res) => {
       throw new Error('Network response not ok');
     }
     const data = await response.json();
-    res.json(data);
+    res.send(data);
   }
   catch (error) {
     console.error('Error fetching weather data:', error);
