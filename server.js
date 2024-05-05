@@ -154,12 +154,12 @@ router.route('/forecast/idofforecast')
     
             // Find all documents in the Forecast collection
             const forecasts = await Forecast.find();
-    
+            var currentNumber = 0;
+
             // Loop through each forecast document
             forecasts.forEach(async function(forecast) {
-                var currentNumber = 0;
                 // Update each forecast document with new weather data
-                await Forecast.findOneAndUpdate({ _id: weather._id }, { 
+                await Forecast.findOneAndUpdate({ _id: forecast._id }, { 
                     timeOfDay: weatherData.properties.periods[currentNumber].name,
                     temperatureFarenheit: weatherData.properties.periods[currentNumber].temperature,
                     conditions: weatherData.properties.periods[currentNumber].shortForecast,
@@ -194,10 +194,10 @@ router.route('/forecast/idofforecast')
                         };
                     }
             })
-            currentNumber = currentNumber + 1;
+            currentNumber = currentNumber + 1; 
+            forecast.setWeatherImage();
         });
 
-        forecast.setWeatherImage();
         res.json({ status: 200, message: "Forecasts updated" });
         }
         catch (error) {
