@@ -209,22 +209,22 @@ router.route('/forecast/idofforecast')
             case 'mostly cloudy then slight chance rain showers':
             case 'chance showers and thunderstorms then sunny':
             case 'mostly clear then slight chance showers and thunderstorms':
-                return 'https://i.imgur.com/tTqV2XF.png';
+                return 'https://i.imgur.com/EilAIa2.png';
             case 'rainy':
             case 'showers and thunderstorms':
             case 'showers and thunderstorms likely':
             case 'chance showers and thunderstorms':
             case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
             case 'slight chance showers and thunderstorms then sunny':
-                return 'https://i.imgur.com/YDNCivR.png';
+                return 'https://i.imgur.com/AuAzXd4.png';
             case 'snowy':
-                return 'https://i.imgur.com/dXGTfkB.png';
+                return 'https://i.imgur.com/a9Pec9L.png';
             case 'sunny':
             case 'mostly clear':
             case 'mostly sunny':
-                return 'https://i.imgur.com/yJulfKw.png';
+                return 'https://i.imgur.com/wUUEEKW.png';
             default:
-                return 'https://i.imgur.com/j6oE6lq.png';
+                return 'https://i.imgur.com/WNwTSEX.png';
         }
     }
     
