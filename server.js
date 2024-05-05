@@ -143,21 +143,29 @@ router.route('/forecast/idofforecast')
         });
     })
 
-router.route('/forecast')
-    .get(authJwtController.isAuthenticated, function (req, res) {
-         if (err || !data) {
-            res.json({status: 400, message: "Forecast couldn't be found."});
-        }
-        else {
-            if(err){
-                console.log("Error encountered.");
-                res.send(err);
+    router.route('/forecast')
+        .get(authJwtController.isAuthenticated, async function (req, res) {
+            try {
+                // Fetch current weather data
+                const weatherResponse = await fetch('https://api.weather.gov/gridpoints/TOP/31,80/forecast');
+                if (!weatherResponse.ok) {
+                    throw new Error('Network response not ok');
+                }
+                const weatherData = await weatherResponse.json();
+
+                // Find the first document in the Forecast collection
+                const forecast = await Forecast.findOne();
+
+                if (!forecast) {
+                    res.json({ status: 400, message: "Forecast couldn't be found." });
+                } else {
+                    res.json({ status: 200, message: "Forecast found!", forecast });
+                }
+            } catch (error) {
+                console.error("Error fetching forecast:", error);
+                res.status(500).json({ error: "Failed to fetch forecast" });
             }
-            else {
-                res.json({status: 200, message: "Forecast found!", Forecast: data});
-            }
-        }
-    })
+        });
     
     .put(authJwtController.isAuthenticated, async function(req, res) {
         try {
