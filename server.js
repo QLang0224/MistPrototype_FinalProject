@@ -234,17 +234,37 @@ router.route('/forecastlist')
             if (!response.ok) {
                 throw new Error('Network response not ok');
             }
-            const data = await response.json();
+            const weatherData = await response.json();
 
-            // Assuming you have a Forecast model/schema
-            const forecastData = data.properties.periods.slice(0, 14);
-            res.json(forecastData);
+            const forecastPeriods = weatherData.properties.periods.slice(0, 14);
+
+            // Initialize an array to store translated forecast data
+            const translatedForecastData = [];
+
+            // Loop through each forecast period
+            for (const period of forecastPeriods) {
+                const translatedForecast = {
+                    timeOfDay: period.name,
+                    temperatureFarenheit: period.temperature,
+                    conditions: period.shortForecast,
+                    windSpeed: period.windSpeed,
+                    precipitationChance: period.probabilityOfPrecipitation?.value || 0, // Handling possible absence of precipitation data
+                    imageUrl: getWeatherImageUrl(period.shortForecast)
+                };
+
+                // Push the translated forecast into the array
+                translatedForecastData.push(translatedForecast);
+            }
+
+            // Send the translated forecast data as response
+            res.json(translatedForecastData);
         }
         catch (error) {
             console.error('Error fetching weather data:', error);
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     });
+
   
     
 app.use('/', router);
