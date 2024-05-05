@@ -215,8 +215,12 @@ router.route('/forecast/idofforecast')
             case 'showers and thunderstorms':
             case 'showers and thunderstorms likely':
             case 'chance showers and thunderstorms':
+            case 'chance showers and thunderstorms then sunny':
+            case 'showers and thunderstorms then mostly cloudy':
             case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
             case 'slight chance showers and thunderstorms then sunny':
+            case 'patchy drizzle':
+            case 'showers And thunderstorms then mostly cloudy':
                 return 'https://i.imgur.com/AuAzXd4.png';
             case 'snowy':
                 return 'https://i.imgur.com/a9Pec9L.png';
