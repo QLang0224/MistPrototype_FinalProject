@@ -111,19 +111,19 @@ router.post('/signin', function (req, res) {
 });
 
 //auth-verification endpoint
-function verifyToken(req, res, next) {
-    var token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).json({ success: false, msg: 'No token provided.' });
-    }
-    jwt.verify(token.split(' ')[1], SECRET_KEY, function(err, decoded) {
-        if (err) {
-            return res.status(500).json({ success: false, msg: 'Failed to authenticate token.' });
-        }
-        req.userId = decoded.id;
-        next();
-    });
-}
+// function verifyToken(req, res, next) {
+//     var token = req.headers.authorization;
+//     if (!token) {
+//         return res.status(401).json({ success: false, msg: 'No token provided.' });
+//     }
+//     jwt.verify(token.split(' ')[1], SECRET_KEY, function(err, decoded) {
+//         if (err) {
+//             return res.status(500).json({ success: false, msg: 'Failed to authenticate token.' });
+//         }
+//         req.userId = decoded.id;
+//         next();
+//     });
+// }
 
 router.route('/forecast/idofforecast')
     .get(authJwtController.isAuthenticated, function (req, res) {
