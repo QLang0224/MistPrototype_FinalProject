@@ -209,6 +209,7 @@ router.route('/forecast/idofforecast')
             case 'mostly cloudy then slight chance rain showers':
             case 'chance showers and thunderstorms then sunny':
             case 'mostly clear then slight chance showers and thunderstorms':
+            case 'slight chance showers and thunderstorms':
                 return 'https://i.imgur.com/EilAIa2.png';
             case 'rainy':
             case 'showers and thunderstorms':
