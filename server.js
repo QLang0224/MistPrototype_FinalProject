@@ -189,7 +189,7 @@ router.route('/forecast/idofforecast')
                     temperatureFarenheit: weatherData.properties.periods[i].temperature,
                     conditions: weatherData.properties.periods[i].shortForecast,
                     windSpeed: weatherData.properties.periods[i].windSpeed,
-                    precipitationChance: weatherData.properties.periods[i].probabilityOfPrecipitation.value,
+                    precipitationChance: weatherData.properties.periods[i].probabilityOfPrecipitation.value || 0,
                     imageUrl: getWeatherImageUrl(weatherData.properties.periods[i].shortForecast)
                 });
             }
@@ -206,18 +206,22 @@ router.route('/forecast/idofforecast')
         switch (conditions.toLowerCase()) {
             case 'cloudy':
             case 'partly cloudy then slight chance showers and thunderstorms':
+            case 'mostly cloudy then slight chance rain showers':
             case 'chance showers and thunderstorms then sunny':
+            case 'mostly clear then slight chance showers and thunderstorms':
                 return 'https://i.imgur.com/tTqV2XF.png';
             case 'rainy':
             case 'showers and thunderstorms':
             case 'showers and thunderstorms likely':
             case 'chance showers and thunderstorms':
             case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
+            case 'slight chance showers and thunderstorms then sunny':
                 return 'https://i.imgur.com/YDNCivR.png';
             case 'snowy':
                 return 'https://i.imgur.com/dXGTfkB.png';
             case 'sunny':
             case 'mostly clear':
+            case 'mostly sunny':
                 return 'https://i.imgur.com/yJulfKw.png';
             default:
                 return 'https://i.imgur.com/j6oE6lq.png';
