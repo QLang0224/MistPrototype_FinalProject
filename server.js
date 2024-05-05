@@ -170,57 +170,52 @@ router.route('/forecast')
     
             // Find all documents in the Forecast collection
             const forecasts = await Forecast.find();
-            var currentNumber = 0;
-
+    
             // Loop through each forecast document
-            forecasts.forEach(async function(forecast) {
+            for (let i = 0; i < forecasts.length && i < 14; i++) {
+                const forecast = forecasts[i];
+                
                 // Update each forecast document with new weather data
                 await Forecast.findOneAndUpdate({ _id: forecast._id }, { 
-                    timeOfDay: weatherData.properties.periods[currentNumber].name,
-                    temperatureFarenheit: weatherData.properties.periods[currentNumber].temperature,
-                    conditions: weatherData.properties.periods[currentNumber].shortForecast,
-                    windSpeed: weatherData.properties.periods[currentNumber].windSpeed,
-                    precipitationChance: weatherData.properties.periods[currentNumber].probabilityOfPrecipitation.value,
-                    imageUrl: '', // Initialize imageUrl
-        
-                    // Mapping weather conditions to images
-                    setWeatherImage: function() {
-                        switch (this.conditions.toLowerCase()) {
-                            case 'cloudy':
-                            case 'partly cloudy then slight chance showers and thunderstorms':
-                            case 'chance showers and thunderstorms then sunny':
-                                this.imageUrl = 'https://i.imgur.com/tTqV2XF.png';
-                                break;
-                            case 'rainy':
-                            case 'showers and thunderstorms':
-                            case 'showers and thunderstorms likely':
-                            case 'chance showers and thunderstorms':
-                            case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
-                                this.imageUrl = 'https://i.imgur.com/YDNCivR.png';
-                                break;
-                            case 'snowy':
-                                this.imageUrl = 'https://i.imgur.com/dXGTfkB.png';
-                                break;
-                            case 'sunny':
-                            case 'mostly clear':
-                                this.imageUrl = 'https://i.imgur.com/yJulfKw.png';
-                                break;
-                            default:
-                                this.imageUrl = 'https://i.imgur.com/j6oE6lq.png';
-                        };
-                    }
-            })
-            currentNumber = currentNumber + 1; 
-            forecast.setWeatherImage();
-        });
-
-        res.json({ status: 200, message: "Forecasts updated" });
-        }
-        catch (error) {
+                    timeOfDay: weatherData.properties.periods[i].name,
+                    temperatureFarenheit: weatherData.properties.periods[i].temperature,
+                    conditions: weatherData.properties.periods[i].shortForecast,
+                    windSpeed: weatherData.properties.periods[i].windSpeed,
+                    precipitationChance: weatherData.properties.periods[i].probabilityOfPrecipitation.value,
+                    imageUrl: getWeatherImageUrl(weatherData.properties.periods[i].shortForecast)
+                });
+            }
+    
+            res.json({ status: 200, message: "Forecasts updated" });
+        } catch (error) {
             console.error('Error updating forecasts:', error);
             res.status(500).json({ error: 'Failed to update forecasts' });
         }
     });
+    
+    // Function to get weather image URL based on conditions
+    function getWeatherImageUrl(conditions) {
+        switch (conditions.toLowerCase()) {
+            case 'cloudy':
+            case 'partly cloudy then slight chance showers and thunderstorms':
+            case 'chance showers and thunderstorms then sunny':
+                return 'https://i.imgur.com/tTqV2XF.png';
+            case 'rainy':
+            case 'showers and thunderstorms':
+            case 'showers and thunderstorms likely':
+            case 'chance showers and thunderstorms':
+            case 'slight chance showers and thunderstorms then chance showers and thunderstorms':
+                return 'https://i.imgur.com/YDNCivR.png';
+            case 'snowy':
+                return 'https://i.imgur.com/dXGTfkB.png';
+            case 'sunny':
+            case 'mostly clear':
+                return 'https://i.imgur.com/yJulfKw.png';
+            default:
+                return 'https://i.imgur.com/j6oE6lq.png';
+        }
+    }
+    
 
 // Fetch the forecast for the next 7 days
 router.route('/forecastlist')
