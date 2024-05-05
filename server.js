@@ -143,6 +143,22 @@ router.route('/forecast/idofforecast')
         });
     })
 
+router.route('/forecast')
+    .get(authJwtController.isAuthenticated, function (req, res) {
+         if (err || !data) {
+            res.json({status: 400, message: "Forecast couldn't be found."});
+        }
+        else {
+            if(err){
+                console.log("Error encountered.");
+                res.send(err);
+            }
+            else {
+                res.json({status: 200, message: "Forecast found!", Forecast: data});
+            }
+        }
+    })
+    
     .put(authJwtController.isAuthenticated, async function(req, res) {
         try {
             // Fetch current weather data
